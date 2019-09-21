@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>Entering captcha</title>
+</head>
+<body>
+    <p style="text-align: center; font-size: 1.2em;">Please, enter captcha for continue<p/>
+        <script src="https://www.gstatic.com/firebasejs/5.5.3/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-app.js"></script>
+
+        <!-- Add additional services that you want to use -->
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-firestore.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-messaging.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/5.8.2/firebase-functions.js"></script>
+
+    <script>
+              var config = {
+                    apiKey: "AIzaSyArdzeB7AIlEaD3sVrfQa49wKZaK-2R47o",
+                    authDomain: "video-ac159.firebaseapp.com",
+                    databaseURL: "https://video-ac159.firebaseio.com",
+                    projectId: "video-ac159",
+                    storageBucket: "video-ac159.appspot.com",
+                    messagingSenderId: "749648806542"
+                    };
+                    firebase.initializeApp(config);
+        function getToken(callback) {
+            var container = document.createElement('div');
+            container.id = 'captcha';
+            document.body.appendChild(container);
+            var captcha = new firebase.auth.RecaptchaVerifier('captcha', {
+                'size': 'normal',
+                'callback': function(token) {
+                    callback(token);
+                },
+                'expired-callback': function() {
+                    callback('');
+                }
+            });
+            captcha.render().then(function() {
+                captcha.verify();
+            });
+        }
+
+        function sendTokenToApp(token) {
+            var baseUri = decodeURIComponent(location.search.replace(/^\?appurl\=/, ''));
+            
+            location.href = baseUri + '/?token=' + encodeURIComponent(token);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            getToken(sendTokenToApp);
+        });
+     
+    </script>
+</body>
+</html>
